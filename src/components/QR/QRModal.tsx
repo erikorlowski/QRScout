@@ -12,6 +12,16 @@ import {
 } from '../ui/dialog';
 import { PreviewText } from './PreviewText';
 
+/** Serialize a field value for QR code or display; TBA-team-and-robot is stored as an object. */
+function fieldValueToQrString(value: unknown): string {
+  if (value != null && typeof value === 'object' && 'teamNumber' in value) {
+    const { teamNumber } = value as { teamNumber: number };
+    return String(teamNumber);
+  }
+  if (value === null || value === undefined) return '';
+  return String(value);
+}
+
 export interface QRModalProps {
   disabled?: boolean;
 }
@@ -19,17 +29,17 @@ export interface QRModalProps {
 export function QRModal(props: QRModalProps) {
   const fieldValues = useQRScoutState(state => state.fieldValues);
   const formData = useQRScoutState(state => state.formData);
-  const title = `${getFieldValue('robot')} - M${getFieldValue(
+  const robotValue = getFieldValue('robot');
+  const title = `${fieldValueToQrString(robotValue)} - M${getFieldValue(
     'matchNumber',
   )}`.toUpperCase();
 
-  const qrCodePreview = useMemo(
-    () => fieldValues.map(f => f.value).join(','),
-    [fieldValues],
-  );
   const qrCodeData = useMemo(
-    () => fieldValues.map(f => f.value).join(formData.delimiter),
-    [fieldValues],
+    () =>
+      fieldValues
+        .map(f => fieldValueToQrString(f.value))
+        .join(formData.delimiter),
+    [fieldValues, formData.delimiter],
   );
   //Two seperate values are required- qrCodePreview is what is shown to the user beneath the QR code, qrCodeData is the actual data.
 
@@ -41,15 +51,15 @@ export function QRModal(props: QRModalProps) {
           Commit
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="h-[95%]">
         <DialogTitle className="text-3xl text-primary text-center font-rhr-ns tracking-wider ">
           {title}
         </DialogTitle>
-        <div className="flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-6 overflow-y-scroll">
           <div className="bg-white p-4 rounded-md">
             <QRCodeSVG className="m-2 mt-4" size={256} value={qrCodeData} />
           </div>
-          <PreviewText data={qrCodePreview} />
+          <PreviewText data={qrCodeData} />
         </div>
         <DialogFooter>
           <Button
