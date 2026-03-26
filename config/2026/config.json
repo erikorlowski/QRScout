@@ -160,7 +160,7 @@
 								{
 									"title":"Fuel scored",
 									"description":"Did they score in auto",
-									"type":"counter",
+									"type":"multi-counter",
 									"required":false,
 									"code":"FIA",
 									"formResetBehavior":"reset",
@@ -220,7 +220,7 @@
 									{
 										"title":"Robot Fuel Score",
 										"description":"The amount of fuel scored in teleop (by the robot)",
-										"type":"counter",
+										"type":"multi-counter",
 										"required":false,
 										"code":"FSA",
 										"formResetBehavior":"reset",
@@ -231,7 +231,7 @@
 									{
 										"title":"Human Fuel Scored",
 										"description":"The amount of fuel scored directly by the human player",
-										"type":"counter",
+										"type":"multi-counter",
 										"required":false,
 										"code":"HFS",
 										"formResetBehavior":"reset",
